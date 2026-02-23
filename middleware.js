@@ -6,7 +6,17 @@ const { listingSchema,reviewSchema} = require("./schema");
 module.exports.isLoggedIn=(req,res,next)=>{
     if(!req.isAuthenticated()){
     req.session.redirectUrl=req.originalUrl;
-    req.flash("error","you must be logged in to create listing!");
+    req.flash("error","You must be logged in to book a destination!");
+    
+    // If it's an API request (JSON), return JSON response
+    if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+        return res.status(401).json({
+            success: false,
+            message: "Authentication required. Please login to book.",
+            redirect: "/login"
+        });
+    }
+    
     return res.redirect("/login");
   }
   next();
@@ -25,6 +35,20 @@ module.exports.isListingOwner=async(req,res,next)=>{
     if(!listing.owner.equals(res.locals.currUser._id)){
         req.flash("error","You do not have permission to do that!");
         return res.redirect(`/listings/${id}`);
+    }
+    next();
+}
+
+// Only admin can create/edit/delete listings (other users can only book)
+module.exports.isAdmin=(req,res,next)=>{
+    if(!req.isAuthenticated()){
+        req.flash("error","You must be logged in.");
+        return res.redirect("/login");
+    }
+    const adminEmail=process.env.ADMIN_EMAIL || "";
+    if(!adminEmail || req.user.email!==adminEmail){
+        req.flash("error","Only admin can create or manage listings. You can book hotels.");
+        return res.redirect("/listings");
     }
     next();
 }

@@ -4,8 +4,26 @@ const mapToken=process.env.MAPBOX_TOKEN;
 const geocodingClient=mbxGeocoding({accessToken: mapToken});
 
 module.exports.index=async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
+  const { category, search } = req.query;
+  let filter = {};
+  if (category && category !== "Trending") {
+    filter.category = category;
+  }
+  if (search && search.trim()) {
+    const regex = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    filter.$or = [
+      { title: regex },
+      { description: regex },
+      { location: regex },
+      { country: regex },
+    ];
+  }
+  const allListings = await Listing.find(filter);
+  res.render("listings/index.ejs", {
+    allListings,
+    currentCategory: category || "Trending",
+    searchQuery: search || "",
+  });
 };
 
 module.exports.newListing=(req, res) => {

@@ -8,6 +8,10 @@ const userSchema = new Schema({
         required:true,
         unique:true
     },
+    avatar: {
+        url: String,
+        filename: String,
+    },
 });
 userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("User", userSchema);

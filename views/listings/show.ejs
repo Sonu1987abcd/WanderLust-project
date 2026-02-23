@@ -10,14 +10,14 @@
     <div class="card col-6 offset-3 show-card listing-card">
   <img src="<%=listing.image.url%>" class="card-img-top show-img" alt="listing_image">
   <div class="card-body">
-   <p class="card-text"><b>Owner:</b> <%= listing.owner.username %><br></p>
+   <p class="card-text"><b>Owner:</b> <%= listing.owner && listing.owner.username ? listing.owner.username : "—" %><br></p>
    <p class="card-text"><b>Description:</b> <%= listing.description %><br></p>
    <p class="card-text"><b>Price:</b> &#8377; <%= listing.price.toLocaleString("en-IN") %><br></p>
    <p class="card-text"><b>Location:</b> <%= listing.location %><br></p>
    <p class="card-text"><b>Country:</b> <%= listing.country %> 
   </div>
 </div>
-<% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+<% if (typeof isAdmin !== "undefined" && isAdmin) { %>
     <div class="btns">
     <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
     <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
@@ -26,6 +26,75 @@
     <br>
     </div>
  <% } %>
+
+ <div class="mb-4"></div>
+
+<!-- Booking Section -->
+<% 
+  let isOwner = false;
+  if (currUser && listing.owner) {
+    if (typeof listing.owner._id !== 'undefined') {
+      isOwner = listing.owner._id.equals(currUser._id);
+    } else if (typeof listing.owner === 'object' && listing.owner.toString) {
+      isOwner = listing.owner.toString() === currUser._id.toString();
+    }
+  }
+%>
+
+<% if (!currUser) { %>
+<!-- Not logged in - Show login prompt -->
+<div class="col-6 offset-3 mb-4">
+  <div class="card">
+    <div class="card-header bg-warning text-dark">
+      <h5 class="mb-0"><i class="fa-solid fa-lock"></i> Login Required to Book</h5>
+    </div>
+    <div class="card-body text-center">
+      <p class="mb-3">Please login to book this destination</p>
+      <a href="/login" class="btn btn-primary me-2">Login</a>
+      <a href="/signup" class="btn btn-outline-primary">Sign Up</a>
+    </div>
+  </div>
+</div>
+<% } else if ((typeof isAdmin !== "undefined" && isAdmin) || !isOwner) { %>
+<!-- Logged in and not owner - Show booking form -->
+<div class="col-6 offset-3 mb-4">
+  <div class="card">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0"><i class="fa-solid fa-calendar-check"></i> Book This Destination</h5>
+    </div>
+    <div class="card-body">
+      <form id="bookingForm">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="checkInDate" class="form-label">Check-in Date</label>
+            <input type="date" class="form-control" id="checkInDate" name="checkInDate" required>
+          </div>
+          <div class="col-md-6">
+            <label for="checkOutDate" class="form-label">Check-out Date</label>
+            <input type="date" class="form-control" id="checkOutDate" name="checkOutDate" required>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="guests" class="form-label">Number of Guests</label>
+          <input type="number" class="form-control" id="guests" name="guests" min="1" value="1" required>
+        </div>
+        <div class="mb-3">
+          <div class="alert alert-info" id="priceInfo" style="display: none;">
+            <strong>Total Amount: <span id="totalAmount">₹0</span></strong>
+            <br><small id="nightsInfo"></small>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-lg w-100" id="bookBtn">
+          <i class="fa-solid fa-credit-card"></i> Pay & Book Now - ₹<span id="displayPrice"><%= listing.price.toLocaleString("en-IN") %></span>/night
+        </button>
+        <p class="text-center mt-2 text-muted small">
+          <i class="fa-solid fa-shield-halved"></i> Secure Real-Time Payment via Razorpay
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+<% } %>
     <div class="col-8 offset-3 mb-3">
       <% if(currUser){ %>
       <hr>
@@ -64,14 +133,16 @@
        <% for(let review of listing.reviews){ %>
       <div class ="card col-5 ms-3 mb-3">
         <div class="card-body">
-          <h5 class="card-title">@<%=review.author.username%></h5>
+          <h5 class="card-title">@<%= review.author && review.author.username ? review.author.username : "Deleted user" %></h5>
           <p class="starability-result card-text" data-rating="<%=review.rating%>">
             Rated: <%=review.rating%> stars </p>
           <p class="card-text"><%=review.comment%></p>
         </div>
+       <% if (currUser && review.author && review.author._id && review.author._id.equals(currUser._id)) { %>
         <form class="mb-3" method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
           <button type="submit" class="btn btn-sm btn-dark">Delete</button>
         </form>
+        <% } %>
       </div>
       <% } %> 
     </div>
@@ -83,4 +154,6 @@
     </div>
 </div>
 <br>
-<script src="/js/map.js"></script>  
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/map.js"></script>
+<script src="/js/payment.js"></script>  

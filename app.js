@@ -19,6 +19,7 @@ const User = require("./models/user");
 const listingRouter=require("./routes/listing");
 const reviewRouter=require("./routes/review");
 const userRouter=require("./routes/user");
+const bookingRouter=require("./routes/booking");
 
 const atlasDB_URL=process.env.ATLASDB_URL;
 
@@ -80,6 +81,9 @@ app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
     res.locals.currUser=req.user;
+    res.locals.isAdmin=!!(req.user&&process.env.ADMIN_EMAIL&&req.user.email===process.env.ADMIN_EMAIL);
+    res.locals.currentCategory=req.query.category||"";
+    res.locals.searchQuery=req.query.search||"";
     next(); 
 })
 
@@ -94,6 +98,7 @@ app.use((req,res,next)=>{
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
+app.use("/bookings",bookingRouter);
 app.use("/",userRouter);
 
 // // //  it is work as middleware when route is not found
@@ -108,6 +113,7 @@ app.use((err,req,res,next)=>{
     // res.status(statusCode).send(message);
 });  
 
-app.listen(8010,()=>{
-    console.log("Server is running on port 8010");
+const PORT = process.env.PORT || 8010;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

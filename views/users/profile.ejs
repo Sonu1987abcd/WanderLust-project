@@ -1,0 +1,51 @@
+<% layout('layouts/boilerplate') %>
+<div class="row mt-4">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="fa-solid fa-user"></i> Profile</h4>
+        <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+          <span class="badge bg-danger">Admin</span>
+        <% } else { %>
+          <span class="badge bg-primary">User</span>
+        <% } %>
+      </div>
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="me-3">
+            <% if (currUser.avatar && currUser.avatar.url) { %>
+              <img src="<%= currUser.avatar.url %>" alt="Profile photo" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+            <% } else { %>
+              <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <span style="font-size: 2rem;"><%= currUser.username ? currUser.username.charAt(0).toUpperCase() : "U" %></span>
+              </div>
+            <% } %>
+          </div>
+          <div>
+            <p class="card-text mb-1"><b>Username:</b> <%= currUser.username %></p>
+            <p class="card-text mb-0"><b>Email:</b> <%= currUser.email %></p>
+          </div>
+        </div>
+
+        <form action="/profile/avatar" method="POST" enctype="multipart/form-data" class="mb-3">
+          <div class="mb-2">
+            <label for="avatar" class="form-label">Profile photo</label>
+            <input type="file" name="avatar" id="avatar" accept="image/*" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-sm btn-outline-primary">Upload new photo</button>
+        </form>
+        <hr>
+        <h6 class="text-muted mb-2">Manage your account</h6>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2"><a href="/bookings" class="text-decoration-none"><i class="fa-solid fa-calendar-check"></i> My Bookings</a></li>
+          <li class="mb-2"><a href="/change-password" class="text-decoration-none"><i class="fa-solid fa-key"></i> Change password</a></li>
+          <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+            <li class="mb-2"><a href="/listings/new" class="text-decoration-none"><i class="fa-solid fa-plus"></i> Add listing (Haven & Home)</a></li>
+            <li class="mb-2"><a href="/listings" class="text-decoration-none"><i class="fa-regular fa-compass"></i> Explore / manage listings</a></li>
+          <% } %>
+          <li><a href="/logout" class="text-decoration-none text-danger"><i class="fa-solid fa-right-from-bracket"></i> Log out</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

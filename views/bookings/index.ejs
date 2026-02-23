@@ -1,0 +1,44 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <h2><i class="fa-solid fa-calendar-check"></i> My Bookings</h2>
+    <hr>
+  </div>
+</div>
+
+<% if (bookings && bookings.length > 0) { %>
+  <div class="row">
+    <% for(let booking of bookings) { %>
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>" style="height: 200px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title"><%= booking.listing.title %></h5>
+            <p class="card-text">
+              <strong>Location:</strong> <%= booking.listing.location %>, <%= booking.listing.country %><br>
+              <strong>Check-in:</strong> <%= new Date(booking.checkInDate).toLocaleDateString('en-IN') %><br>
+              <strong>Check-out:</strong> <%= new Date(booking.checkOutDate).toLocaleDateString('en-IN') %><br>
+              <strong>Guests:</strong> <%= booking.guests %><br>
+              <strong>Amount Paid:</strong> ₹<%= booking.amount.toLocaleString('en-IN') %><br>
+              <strong>Status:</strong> 
+              <span class="badge <%= booking.status === 'completed' ? 'bg-success' : booking.status === 'pending' ? 'bg-warning' : 'bg-danger' %>">
+                <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+              </span>
+            </p>
+            <a href="/bookings/<%= booking._id %>" class="btn btn-primary">View Details</a>
+          </div>
+          <div class="card-footer text-muted">
+            Booked on: <%= new Date(booking.bookingDate).toLocaleDateString('en-IN') %>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+<% } else { %>
+  <div class="alert alert-info">
+    <h4>No bookings yet!</h4>
+    <p>Start exploring amazing destinations and book your first stay.</p>
+    <a href="/listings" class="btn btn-primary">Explore Destinations</a>
+  </div>
+<% } %>

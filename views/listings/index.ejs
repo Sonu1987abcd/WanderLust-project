@@ -15,6 +15,15 @@
       opacity:1;
       cursor:pointer;
     }
+    .filter{
+      text-decoration:none;
+      color:inherit;
+    }
+    .filter-active{
+      opacity:1;
+      font-weight:bold;
+      border-bottom:2px solid #fe424d;
+    }
     .filter p{
       font-size:0.8rem;
     }
@@ -31,51 +40,54 @@
       align-items:center;
     }
   </style>
+<%
+  const searchParam = (typeof searchQuery !== 'undefined' && searchQuery) ? '&search=' + encodeURIComponent(searchQuery) : '';
+%>
 <div id="filters">
-<div class="filter">
+<a href="/listings?category=Trending<%= searchParam %>" class="filter <%= currentCategory === 'Trending' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-fire"></i></div>
 <p>Trending</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Rooms<%= searchParam %>" class="filter <%= currentCategory === 'Rooms' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-bed"></i></div>
 <p>Rooms</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Iconic Cities<%= searchParam %>" class="filter <%= currentCategory === 'Iconic Cities' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-mountain-city"></i></div>
 <p>Iconic Cities</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Mountains<%= searchParam %>" class="filter <%= currentCategory === 'Mountains' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-mountain"></i></div>
 <p>Mountains</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Castles<%= searchParam %>" class="filter <%= currentCategory === 'Castles' ? 'filter-active' : '' %>">
 <div><i class="fa-brands fa-fort-awesome"></i></div>
 <p>Castles</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Amazing Pools<%= searchParam %>" class="filter <%= currentCategory === 'Amazing Pools' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-person-swimming"></i></div>
 <p>Amazing Pools</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Camping<%= searchParam %>" class="filter <%= currentCategory === 'Camping' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-campground"></i></div>
 <p>Camping</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Farms<%= searchParam %>" class="filter <%= currentCategory === 'Farms' ? 'filter-active' : '' %>">
 <div><i class="fa-sharp fa-solid fa-cow"></i></div>
-<p>farms</p>
-</div>
-<div class="filter">
+<p>Farms</p>
+</a>
+<a href="/listings?category=Arctic<%= searchParam %>" class="filter <%= currentCategory === 'Arctic' ? 'filter-active' : '' %>">
 <div><i class="fa-duotone fa-regular fa-snowflake"></i></div>
 <p>Arctic</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Domes<%= searchParam %>" class="filter <%= currentCategory === 'Domes' ? 'filter-active' : '' %>">
 <div><i class="fa-sharp fa-solid fa-landmark-dome"></i></div>
 <p>Domes</p>
-</div>
-<div class="filter">
+</a>
+<a href="/listings?category=Boats<%= searchParam %>" class="filter <%= currentCategory === 'Boats' ? 'filter-active' : '' %>">
 <div><i class="fa-solid fa-ship"></i></div>
 <p>Boats</p>
-</div>
+</a>
 <div class="tax-toggle">
   <div class="form-check-reverse form-switch">
   <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
@@ -85,6 +97,12 @@
 </div>
    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-3 mt-3">
 
+     <% if (allListings.length === 0) { %>
+       <div class="col-12 text-center py-5">
+         <p class="text-muted"><%= (typeof searchQuery !== 'undefined' && searchQuery) ? 'No listings match your search.' : 'No listings in this category yet.' %></p>
+         <a href="/listings" class="btn btn-outline-primary">View all (Trending)</a>
+       </div>
+     <% } %>
      <% for(let listing of allListings) { %>
       <a href="/listings/<%=listing._id%>" class="listing-link">
     <div class="card col listing-card">

@@ -4,14 +4,35 @@
     <div class="col-6 offset-3">
         <form action="/login" method="POST" class="needs-validation" novalidate>
             <div class="mb-3">
-           <lable for="username" class="form-label">Username</lable>
+           <label for="username" class="form-label">Username</lable>
             <input name="username"id="username"placeholder="Add a username" type="text" class="form-control" required/>
             </div>
             <div class="mb-3">
-           <lable for="password" class="form-label">Password</lable>
-            <input name="password"id="password"placeholder="Add a password" type="password" class="form-control" required/>
+           <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+                <input name="password" id="password" placeholder="Password (min 6 characters)" type="password" class="form-control" required minlength="6"/>
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword" title="Show password" aria-label="Show password">
+                    <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
+                </button>
             </div>
-            <button type="login" class="btn btn-success">Login</button>
+            </div>
+            <button type="submit" class="btn btn-success">Login</button>
+            <a href="/forgot-password" class="btn btn-link ms-2">Forgot Password?</a>
         </form>
     </div>
 </div>
+<script>
+document.getElementById('togglePassword').addEventListener('click', function() {
+    var input = document.getElementById('password');
+    var icon = document.getElementById('togglePasswordIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        this.setAttribute('title', 'Hide password');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        this.setAttribute('title', 'Show password');
+    }
+});
+</script>

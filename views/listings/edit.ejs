@@ -5,14 +5,14 @@
     <h3>Edit your Listing</h3>
     <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data">
       <div class="mb-3">
-         <lable for="title" class="form-label">Title</lable>
+         <label for="title" class="form-label">Title</lable>
         <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required/>
         <div class="valid-feedback">
       Title Looks good!
     </div>
       </div>
       <div class="mb-3">
-        <lable for="description" class="form-label">Description</lable>
+        <label for="description" class="form-label">Description</lable>
         <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
         <div class="invalid-feedback">
         Please provide a valid description.
@@ -32,19 +32,19 @@
   <% } %>
 </div>
       <div class="mb-3">
-        <lable for="image" class="form-label">Upload New Image</lable>
+        <label for="image" class="form-label">Upload New Image</lable>
         <input name="listing[image]" type="file" class="form-control"/>
       </div>
 <div class="row">       
       <div class="mb-3 col-md-4 ">
-        <lable for="price" class="form-label">Price</lable>
+        <label for="price" class="form-label">Price</lable>
         <input name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" required/>
         <div class="invalid-feedback">
         Please provide a valid price.
       </div>
       </div>      
       <div class="mb-3 col-md-8 ">
-        <lable for="country" class="form-label">Country</lable>
+        <label for="country" class="form-label">Country</lable>
         <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required/>
         <div class="invalid-feedback">
         Please provide a valid country.
@@ -52,11 +52,28 @@
       </div>
 </div>      
       <div class="mb-3">
-        <lable for="location" class="form-label">Location</lable>
+        <label for="location" class="form-label">Location</label>
         <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required/>
         <div class="invalid-feedback">
         Please provide a valid location.
       </div>
+      </div>
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select name="listing[category]" id="category" class="form-control" required>
+          <% const cat = listing.category || 'Trending'; %>
+          <option value="Trending" <%= cat === 'Trending' ? 'selected' : '' %>>Trending</option>
+          <option value="Rooms" <%= cat === 'Rooms' ? 'selected' : '' %>>Rooms</option>
+          <option value="Iconic Cities" <%= cat === 'Iconic Cities' ? 'selected' : '' %>>Iconic Cities</option>
+          <option value="Mountains" <%= cat === 'Mountains' ? 'selected' : '' %>>Mountains</option>
+          <option value="Castles" <%= cat === 'Castles' ? 'selected' : '' %>>Castles</option>
+          <option value="Amazing Pools" <%= cat === 'Amazing Pools' ? 'selected' : '' %>>Amazing Pools</option>
+          <option value="Camping" <%= cat === 'Camping' ? 'selected' : '' %>>Camping</option>
+          <option value="Farms" <%= cat === 'Farms' ? 'selected' : '' %>>Farms</option>
+          <option value="Arctic" <%= cat === 'Arctic' ? 'selected' : '' %>>Arctic</option>
+          <option value="Domes" <%= cat === 'Domes' ? 'selected' : '' %>>Domes</option>
+          <option value="Boats" <%= cat === 'Boats' ? 'selected' : '' %>>Boats</option>
+        </select>
       </div>
       <button type="submit" class="btn btn-dark edit-btn mt-3">Edit</button>
     </form>

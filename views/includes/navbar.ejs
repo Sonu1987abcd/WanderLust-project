@@ -30,17 +30,17 @@
         <a class="nav-link" href="/listings">Explore</a>
       </div>
       <div class="navbar-nav ms-auto">
-         <form class="d-flex" role="search">
-         <input class="form-control me-2 search-input" type="search" placeholder="Search destination" />
+         <form class="d-flex" role="search" method="get" action="/listings">
+         <% if (typeof currentCategory !== 'undefined' && currentCategory) { %><input type="hidden" name="category" value="<%= currentCategory %>" /><% } %>
+         <input class="form-control me-2 search-input" type="search" name="search" placeholder="Search destination" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" />
          <button class="btn search-btn" type="submit">
          <i class="fa-solid fa-magnifying-glass"></i>Search
          </button>
          </form>
       </div>
       <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Airbnb your home</a>
         <% if(currUser) { %>
-          <a class="nav-link" href="/logout"><b>Log out</b></a>
+          <a class="nav-link" href="/profile"><i class="fa-solid fa-user"></i> Profile</a>
         <% } else { %>
           <a class="nav-link" href="/signup"><b>Sign up</b></a>
           <a class="nav-link" href="/login"><b>Log in</b></a>
